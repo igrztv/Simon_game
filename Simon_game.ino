@@ -20,35 +20,36 @@ Servo servoAction;
 int lap = 0;
 bool youLose = false;
 
-bool led(int mode)
+bool led()
 {
   digitalWrite(LED_PIN, HIGH);
   delay(500);
   digitalWrite(LED_PIN, LOW);
 }
 
-bool relay(int mode)
+bool relay()
 {
   digitalWrite(RELAY_PIN, HIGH);
   delay(500);
   digitalWrite(RELAY_PIN, LOW);
 }
 
-bool servo(int mode)
+bool servo()
 {
   servoAction.write(100);
   delay(500);
   servoAction.write(40);
 }
 
-bool sound (int mode)
+bool sound()
+{
   tone(SOUND_PIN, 1000, 500);
   delay(500);
 }
 
 void gameIsOver()
 {
-  for(int i = 0; i < 3; ++i)
+  for (int i = 0; i < 3; ++i)
   {
     servoAction.write(100);
     digitalWrite(RELAY_PIN, HIGH);
@@ -63,7 +64,7 @@ void gameIsOver()
   delay(2000);
 }
 
-typedef bool (*PointerFunction) (int);
+typedef bool (*PointerFunction)();
 
 struct Action
 {
@@ -109,7 +110,7 @@ void loop () {
   //show sequence to repeat
   for (int i = 0; i < lap; ++i)
   {
-    lapActions[i](DO);
+    lapActions[i]();
     delay(500);
   }
 
@@ -127,10 +128,10 @@ void loop () {
       for (int j = 0; j < NUMBER_OF_ACTIONS; ++j)
       {
         //if button is pressed
-        if(digitalRead(doActionsArray[j].sensorPin) == 0)
+        if (digitalRead(doActionsArray[j].sensorPin) == 0)
         {
           //do action for this button
-          doActionsArray[j].act(DO);
+          doActionsArray[j].act();
           //go to next step if is it correct button. otherwise, game is over
           (doActionsArray[j].act == lapActions[i]) ? nextStep = true : youLose = true;
           //anyway break this step
@@ -141,7 +142,7 @@ void loop () {
     //if user loses - don't check next steps
     if (youLose) break;
   }
-  
+
   //I'm sorry );
   if (youLose)
   {
